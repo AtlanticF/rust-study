@@ -28,3 +28,42 @@ Study rust from [trpl](https://kaisery.github.io/trpl-zh-cn/)
 - mut 与 shadowing 有区别
     - 不使用 let 对 **不可变** 变量进行重新赋值时会报错
     - shadowing 实际创建一个新的变量，可以改变 **值** 类型，并且复用这个名字
+
+### 数据类型
+
+#### 标量 scaler: 单独的值
+
+- 整型
+    - 默认 i32
+    - 8，16，32，64，128 bit 有无符号
+    - arch 有无符号: isize usize，依赖 CPU 架构
+    - 允许 `_` 分隔符: 1_000 = 1000
+    - integer overflow
+        - 在 debug 构建中产生 panic
+        - 在 release 构建中发生 warpping 操作
+- 浮点型
+    - f32, f64 使用 IEEE-754 标准表示
+    - 默认 f64
+- 布尔
+    - true, false
+- 字符
+    - 单引号
+    - 占4字节
+    - 代表一个 Unicode 标量值
+
+#### 复合 compound: 多个值组合
+
+- 元祖 tuple
+    - let tup = (100, 2.0, 1) / let tup: (i32, u32, f64) = (-2, 1, 2.3)
+    - 声明后长度不变
+    - 各元素类型可以不同
+    - let (x, y, z) = tup 称之为 destructure
+    - 通过 `.` 访问元素
+- 数组 array
+    - [] 申明
+    - 不可变长度
+    - stack 上分配空间
+    - let a: [i32; 5] = [1, 2, 3, 4, 5]
+    - let a = [3; 5] 长度为 5 的数组，元素都为 3
+   - a[index] 访问
+    - index out of bounds：运行时错误，panic
