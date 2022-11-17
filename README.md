@@ -65,5 +65,5 @@ Study rust from [trpl](https://kaisery.github.io/trpl-zh-cn/)
     - stack 上分配空间
     - let a: [i32; 5] = [1, 2, 3, 4, 5]
     - let a = [3; 5] 长度为 5 的数组，元素都为 3
-   - a[index] 访问
+    - a[index] 访问
     - index out of bounds：运行时错误，panic
