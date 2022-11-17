@@ -67,3 +67,39 @@ Study rust from [trpl](https://kaisery.github.io/trpl-zh-cn/)
     - let a = [3; 5] 长度为 5 的数组，元素都为 3
     - a[index] 访问
     - index out of bounds：运行时错误，panic
+
+### 函数
+
+`snake case` 规范风格，小写加下划线分隔单词
+
+#### 参数
+
+- parameter 和 argument
+
+#### 语句和表达式
+
+- 函数体 = 语句 + 可选的结束表达式
+- Rust 是 expression-based 语言
+- Statements 执行操作，不返回值的 指令
+- Expression 计算并产生一个值 
+- 表达式可以是语句的一部分: let x = 6
+- 函数隐式返回最后的 **表达式**
+
+#### 注释
+
+- `//`
+
+#### 控制流
+
+- 判断 **表达式**: if
+- if (expression) expression 必须为 bool
+- 因为是表达式，所以具有返回值: let number = if condition {1} else {2};
+- 分支表达式返回值类型必须相同
+
+##### 循环
+
+- loop
+- 循环标签 'counting_up: loop {}
+- while 条件循环
+- for 遍历集合 for element in a {}
+- for number in (1..4).rev() {}
