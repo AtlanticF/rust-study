@@ -99,7 +99,7 @@ Study rust from [trpl](https://kaisery.github.io/trpl-zh-cn/)
 ##### 循环
 
 - loop
-- 循环标签 'counting_up: loop {}
+- 循环标签 'counting_up: loop {} -- 消除多个循环之间的歧义
 - while 条件循环
 - for 遍历集合 for element in a {}
 - for number in (1..4).rev() {}
