@@ -7,13 +7,13 @@ Study rust from [trpl](https://kaisery.github.io/trpl-zh-cn/)
 
 ## 一些概念
 
-### 变量
+### 一、变量
 
 - 使用 let 申明
 - 变量默认是 immutable（不可变）的
 - 使用 let mut 申明可变变量
 
-### 常量
+### 二、常量
 
 - 使用 const 申明
 - 常量总是不能变
@@ -22,14 +22,14 @@ Study rust from [trpl](https://kaisery.github.io/trpl-zh-cn/)
 - 编译时计算
 - 在申明的作用域中，常量在整个程序生命周期中都有效
 
-### 隐藏（shadowing）
+### 三、隐藏（shadowing）
 
 - 定义一个与之前变量同名的新变量的行为，称为 shadowing
 - mut 与 shadowing 有区别
     - 不使用 let 对 **不可变** 变量进行重新赋值时会报错
     - shadowing 实际创建一个新的变量，可以改变 **值** 类型，并且复用这个名字
 
-### 数据类型
+### 四、数据类型
 
 #### 标量 scaler: 单独的值
 
@@ -53,7 +53,7 @@ Study rust from [trpl](https://kaisery.github.io/trpl-zh-cn/)
 
 #### 复合 compound: 多个值组合
 
-- 元祖 tuple
+- 元组 tuple
     - let tup = (100, 2.0, 1) / let tup: (i32, u32, f64) = (-2, 1, 2.3)
     - 声明后长度不变
     - 各元素类型可以不同
@@ -68,7 +68,7 @@ Study rust from [trpl](https://kaisery.github.io/trpl-zh-cn/)
     - a[index] 访问
     - index out of bounds：运行时错误，panic
 
-### 函数
+### 五、函数
 
 `snake case` 规范风格，小写加下划线分隔单词
 
