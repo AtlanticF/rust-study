@@ -62,7 +62,6 @@ Study rust from [trpl](https://kaisery.github.io/trpl-zh-cn/)
 - 数组 array
     - [] 申明
     - 不可变长度
-    - stack 上分配空间
     - let a: [i32; 5] = [1, 2, 3, 4, 5]
     - let a = [3; 5] 长度为 5 的数组，元素都为 3
     - a[index] 访问
@@ -229,6 +228,8 @@ fn takes_and_gives_back(a_string: String) -> String { // a_string 进入作用�
     a_string  // 返回 a_string 并移出给调用的函数
 }
 ```
+问题：继续使用所有权转移前的参数是常见的需求，每次转移再返回略显啰嗦，如果使用使用 tuple 也是复杂，如何更优雅地解决这个问题？
+Rust 提出 **borrowing** 和 **references**
 
 ## 三、引用和借用
 
