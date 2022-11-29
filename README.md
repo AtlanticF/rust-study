@@ -581,3 +581,85 @@ fn main() {
     );
 }
 ```
+
+## 六、枚举和模式匹配（enumerations and match patterns）
+
+### 6.1 枚举的定义
+
+枚举提供把值成为一个集合之一的方法。
+
+```rust
+enum IpAddrKind {
+    IPv4,
+    IPv6,
+}
+let ipv4 = IpAddrKind::IPv4;
+let ipv6 = IpAddrKink::IPv6;
+fn route(ip_kind: IpAddrKind) {}
+route(IpAddrKind::IPv4);
+route(IpAddrKind::IPv6);
+
+struct IpAddr {
+    kind: IpAddrKind,
+    address: String,
+}
+let localhost = IpAddr {
+    kind: IpAddrKind::IPv4,
+    address: String::from("127.0.0.1"),
+};
+let loopback = IpAddr {
+    kind: IpAddrKind::IPv6,
+    address: String::from("::1"),
+},
+
+enum IpAddr {
+    V4(String), // V4(u8, u8, u8, u8)
+    V6(String),
+}
+let localhost = IpAddr(String::from("127.0.0.1"));
+let loopback = IpAddr(String::from("::1"));
+
+// Quit 没有关联任何数据
+// Move 类似结构体包含命名字段
+// Write 包含单独一个 String
+// ChangeColor 包含三个 i32
+enum Message {
+    Quit,
+    Move: {x: i32, y: i32},
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+// enum 依然可以使用 impl 来定义方法
+impl Message {
+    fn call(&self) {
+
+    }
+}
+let m = Message::Wirte(String::from("hello"));
+m.call();
+```
+
+Rust没有空值，存在None概念枚举 Option<T>
+
+```rust
+enum Option<T> {
+    None,
+    Some(T),
+}
+let some_number = Some(5);
+let some_char = Some('a');
+// 允许使用 Option<T> 来定义 None 值
+// 希望 absent_number 是 i32 类型，但是现在它的值是枚举 None
+let absent_number: Option<i32> = None;
+let x: i8 = 5;
+let y: Option<i8> = Some(5);
+// no implementation for `i8 + Option<i8>`
+// 类型不同，无法相加
+// 在对 Option<T> 进行 T 的运算之前必须将其转换为 T。通常这能帮助我们捕获到空值最常见的问题之一：假设某值不为空但实际上为空的情况。
+// 只有当使用 Option<i8>（或者任何用到的类型）的时候需要担心可能没有值，而编译器会确保我们在使用值之前处理了为空的情况。
+let sum = x + y;
+```
+
+### 6.2 match 模式匹配控制流结构
+
+### if let 简洁控制
