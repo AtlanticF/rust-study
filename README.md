@@ -61,6 +61,7 @@ Study rust from [trpl](https://kaisery.github.io/trpl-zh-cn/)
     - 通过 `.` 访问元素
 - 数组 array
     - [] 申明
+    - 数组内各元素类型必须相同
     - 不可变长度
     - let a: [i32; 5] = [1, 2, 3, 4, 5]
     - let a = [3; 5] 长度为 5 的数组，元素都为 3
@@ -453,5 +454,130 @@ fn main() {
     let slice = &a[1..3];
 
     assert_eq!(slice, &[2, 3]);
+}
+```
+
+## 五、结构体 Struct
+
+- structure 是什么？
+- 如何定义一个 struct?
+- 如何实例化 struct?
+- struct 字段的简化写法
+- 结构体更新语法
+- 元组结构体
+- 类单元结构体
+- **结构体数据的所有权**
+
+结构体是自定义数据类型。
+
+```rust
+// 定义结构体
+struct User {
+    username: String,
+    email: String,
+    active: bool,
+    sign_in_account: u64,
+}
+// 实例化
+let user = User {
+    username: String::from("simon"),
+    email: String::from("simon@gmail.com"),
+    active: true,
+    sign_in_account: 1,
+}
+// 简化：与 field 相同的名字
+fn build_user(username: String, email: String) -> User {
+    User {
+        email,
+        username,
+        active: true,
+        sign_in_account: 1,
+    }
+}
+// 更新语法创建实例
+let user2 = User {
+    active: false,
+    ..user // 必须放在最后
+};
+// 创建 user2 后不能再使用 user，因为 user 的 username 和 email 被移动到 user2 中。所有权被 move 了
+// 元祖结构体
+struct Color(i32, i32, i32);
+struct Point(i32, i32, i32);
+// 类单元结构体: 实现 trait
+struct AlwaysEqual;
+
+// dbg! 接收一个表达式的所有权（println!是引用）打印调用时的文件和行号，以及表达式结果只，并返回该值的所有权
+#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let scale = 2;
+    let rect1 = Rectangle {
+        width: dbg!(30 * scale),
+        height: 50,
+    };
+
+    dbg!(&rect1);
+}
+```
+Rust 不允许将结构体某个字段标记为可变。
+
+### 5.1 方法语句
+
+方法与函数：
+- method 和 function
+- 都使用 fn + 名字 声明，可以拥有参数和返回值
+- 方法定义在 `结构体` 上下文中（struct,enum,trait)
+- 方法的第一个参数总是 `self`，代表调用方法的结构体实例
+
+方法定义：
+
+```rust
+#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+// impl 中所有内容都与 Rectangle 关联
+impl Rectangle {
+    // &self -> rectangle: &Rectangle
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+    // associated functions
+    // 我们可以定义不以 self 为第一参数的关联函数（因此不是方法）
+    fn say_hello() {
+        println!("hello");
+    }
+    // 关联函数 经常 被用作返回一个结构体新实例的构造函数
+    fn square(size: u32) -> Self {
+        Self {
+            width: size,
+            height: size,
+        }
+    }
+}
+// 每个结构体都允许拥有多个 impl 块
+impl Rectangle {
+    fn can_hold(&self, other: &Rectangle) -> bool {
+        self.width > other.width && self.height > other.height
+    }
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!(
+        "The area of the rectangle is {} square pixels.",
+        // automatic referencing and dereferencing
+        // (&rect1).area()
+        rect1.area()
+    );
 }
 ```
