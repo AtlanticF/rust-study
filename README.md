@@ -326,3 +326,132 @@ fn dangle() -> &String {
 
 - 在任意给定时间（作用域），要么 只能有一个可变引用，要么 只能有多个不可变引用。
 - 引用必须总是有效的。（编译器保证没有垂悬引用）。
+
+## 四、Slice 类型
+
+Slice 允许引用集合中一段`连续的`元素序列。slice 是一类引用，`没有所有权`。
+
+问题：编写一个函数，该函数接收一个用空格分隔单词的字符串，并返回在该字符串中找到的第一个单词。如果函数在该字符串中并未找到空格，则整个字符串就是一个单词，所以应该返回整个字符串。
+
+```rust
+fn first_word_idx(s: &String) -> usize {
+    let bytes = s.as_bytes();
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return i;
+        }
+    }
+    s.len()
+}
+fn main() {
+    let mut s = String::from("helo world");
+    let word = first_word_index(&s);
+    s.clear();
+    // word 值仍然是 5
+    // 因为 s 无效了，此处 5 也没有意义了
+}
+```
+
+### 4.1 字符串 slice
+
+```rust
+let s = String::from("hello world");
+// [0,5) [6,11)
+// len = end - start
+let hello = &s[0..5]; // hello -> reference -> 'hello'
+let world = &s[6..11]; // world -> reference -> 'world'
+```
+
+    注意：字符串 slice range 的索引必须位于有效的 UTF-8 字符边界内，如果尝试从字接字符的中间位置创建字符串 slice，则程序将会因错误而退出。（理解：slice range 是单字节的）
+
+```rust
+// string slice range 单字节
+
+let s = String::from("中"); // hex:E4B8AD -> 3bytes
+let c = &s[0..1];
+println!("中 slice[0..1] is {}", c);
+```
+
+String variable, String reference, String reference 对比：
+
+- String variable: {ptr, len, capacity}
+- String reference: {ptr}
+- String slice: {ptr, len}
+
+```rust
+// &str 代表 string slice
+fn first_word(s: &String) -> &str {
+    let bytes = s.as_bytes();
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &s[0..i];
+        }
+    }
+    &s[..]
+}
+fn main() {
+    let mut s = String::from("hello world");
+    // 获取了 s 的不可变引用 -> world
+    let world = first_word(&s);
+    s.clear(); // 清空会尝试获取一个可变引用，编译错误
+    // 还要使用 world，根据 NLL 此时 world 不可变引用依然有效
+    println!("the first world is: {}", world);
+}
+```
+
+### 4.2 字符串的字面值就是 slice
+
+```rust
+let s = "Hello world";
+```
+
+为什么字符串字面值不可变？因为是 &str 类型，它是一个不可变引用。
+
+
+### 4.3 字符串 slice 作参数
+
+```rust
+// deref coercions
+fn first_word(s: &str) -> &str {
+    let bytes = s.as_bytes();
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &s[0..i];
+        }
+    }
+    &s[..]
+}
+
+fn main() {
+    let my_string = String::from("hello world");
+
+    // `first_word` 适用于 `String`（的 slice），整体或全部
+    let word = first_word(&my_string[0..6]);
+    let word = first_word(&my_string[..]);
+    // `first_word` 也适用于 `String` 的引用，
+    // 这等价于整个 `String` 的 slice
+    let word = first_word(&my_string);
+
+    let my_string_literal = "hello world";
+
+    // `first_word` 适用于字符串字面值，整体或全部
+    let word = first_word(&my_string_literal[0..6]);
+    let word = first_word(&my_string_literal[..]);
+
+    // 因为字符串字面值已经 **是** 字符串 slice 了，
+    // 这也是适用的，无需 slice 语法！
+    let word = first_word(my_string_literal);
+}
+```
+
+### 4.4 其他类型的 slice
+
+```rust
+fn main() {
+    let a = [1, 2, 3, 4, 5];
+
+    let slice = &a[1..3];
+
+    assert_eq!(slice, &[2, 3]);
+}
+```
