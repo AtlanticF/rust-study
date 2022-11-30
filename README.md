@@ -760,3 +760,30 @@ fn main() {
 ```
 
 ### 6.3 if let 简洁控制
+
+简化冗长的 match 模式匹配。
+这样会失去 match 强制要求的穷尽性检查。
+match 和 if let 之间的选择依赖特定的环境以及增加简洁度和失去穷尽性检查的权衡取舍。
+
+可以认为 if let 是 match 的一个语法糖，它当值匹配某一模式时执行代码而忽略所有其他值。
+
+```rust
+let config_max = Some(3u8);
+match config_max {
+    Some(max) => println!("max: " + max),
+    _ => (),
+}
+
+let config_max_2 = Some(3u8);
+if let Some(max) => config_max_2 {
+    println!("max: " + max);
+}
+// 可以在 if let 中包含一个 else。else 块中的代码与 match 表达式中的 _ 分支块中的代码相同
+
+let mut count = 0;
+if let Coin::Quarter(state) => coin {
+    println!("count: " + count);
+} else {
+    count += 1;
+}
+```
