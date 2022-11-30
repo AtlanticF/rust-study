@@ -662,4 +662,101 @@ let sum = x + y;
 
 ### 6.2 match 模式匹配控制流结构
 
-### if let 简洁控制
+match 控制流运算符允许我们将一个值与一系列的模式相比较，并根据匹配的模式执行相应的代码（有点像 switch case）
+
+```rust
+enum Mac {
+    BookPro,
+    BookAir,
+    IMac,
+}
+fn value_in_mac(mac: Mac) -> u32 {
+    match mac {
+        Mac::BookPro => 9999,
+        Mac::BookAir => 7999,
+        Mac::IMac => 12999,
+    }
+}
+// 通常分支代码比较短不使用大括号
+// 多行代码可以使用大括号，分支后的逗号是可选的
+
+
+// 通过枚举成员绑定值
+#[derive(Debug)]
+enum Country {
+    China,
+    America,
+    India,
+    Japanese,
+    Korean,
+}
+// macbookpro 在不同国家的版本不同
+enum Mac {
+    BookPro(Country),
+    BookAir,
+    IMac,
+}
+fn value_in_mac(mac: Mac) -> u32 {
+    match mac {
+        Mac::BookPro(country) => {
+            println!("Country from {:?} version.", country);
+            9999
+        },
+        Mac::BoorAir => 7999,
+        Mac::IMac => 12999,
+    }
+}
+// call
+value_in_mac(Mac::BookPro(Country::China));
+```
+
+#### Option<T> 匹配
+
+```rust
+fn plus_one(x: Option<i32>) -> Option<i32> {
+    match x {
+        None => None,
+        Some(i) => Some(i + 1),
+    }
+
+    let five = Some(5);
+    let six = plus_one(five);
+    let none = plus_one(None);
+}
+```
+
+match 匹配是穷尽的（有限的）：必须穷举到最后的可能性来使代码有效
+
+#### 通配模式和 _ 占位符
+
+如果希望对一些特定的值采用特殊操作，对其他的值采用默认操作。
+
+```rust
+let dice_roll = 9;
+match dice_roll {
+    3 => have_a_drink(),
+    6 => take_a_photo(),
+    // other 通配
+    // 即使我们没有列出 u8 所有可能的值，这段代码依然能够编译，因为最后一个模式将匹配所有未被特殊列出的值
+    // 我们必须将通配分支放在最后
+    // 如果我们在通配分支后添加其他分支，Rust 将会警告我们，因为此后的分支永远不会被匹配到
+    other => move_player(other),
+}
+fn have_a_drink() {}
+fn take_a_photo() {}
+fn move_player(other: u8) {}
+
+fn main() {
+    let dice_roll = 9;
+    match dice_roll {
+        3 => assassinate(),
+        7 => guard(),
+        // 无事发生，不做任何操作
+        _ => (),
+    }
+    fn assassinate() {}
+    fn guard() {}
+}
+```
+
+### 6.3 if let 简洁控制
