@@ -42,7 +42,7 @@ mod back_of_house {
         }
     }
 
-    fn fix_incorrect_order() {
+    pub fn fix_incorrect_order() {
         cook_order();
         super::super_serve_order();
     }
@@ -54,6 +54,7 @@ pub fn eat_breakfast_at_restaurant() {
     // 订购黑麦吐司面包作为早餐
     let mut meal = back_of_house::Breakfast::summer("Rye");
     // 改变主意想要换一个面包类型
+    back_of_house::fix_incorrect_order();
     meal.toast = String::from("Wheat");
     println!("I'd like {} toast please", meal.toast);
     // 不允许访问早餐附带的季节水果

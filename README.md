@@ -790,7 +790,7 @@ if let Coin::Quarter(state) => coin {
 
 ## 七、包、Crate和模块
 
-### 6.1 包和 crate
+### 7.1 包和 crate
 
 `crate 是 Rust 在编译时最小的代码单位，即便是用 rustc 而不是 cargo 来编译一个文件，编译器还是会将那个文件认作一个 crate`
 
@@ -806,7 +806,7 @@ Cargo 遵循的一个约定：src/main.rs 就是一个与包同名的二进制 c
 crate 根文件将由 Cargo 传递给 rustc 来实际构建库或者二进制项目。
 crate 和模块结构组成 module tree。
 
-### 6.2 module 控制 scope 和私有性
+### 7.2 module 控制 scope 和私有性
 
 编译器编译模块的工作过程：
 
@@ -823,7 +823,7 @@ crate 和模块结构组成 module tree。
 - **pub 关键字：**一个模块里的代码默认对父模块私有（默认父模块无法引入模块）。为了使一个模块公用，应当在声明时使用pub mod替代mod。为了使一个公用模块内部的成员公用，应当在声明前使用pub（函数/方法也有有隐私规则）
 - **use 关键字：**use关键字创建了一个成员的快捷方式，用来减少长路径的重复（类似 PHP use）
 
-### 6.3 引用模块
+### 7.3 引用模块
 
 - 绝对路径：从 crate 根开始，以 crate 名字或者字面值 crate 开头。
 - 相对路径：从当前模块开始，以 self、super 或当前模块的标识符开头。
@@ -841,7 +841,7 @@ Rust 中默认所有项（函数、方法、结构体、枚举、模块和常量
 如果我们在一个结构体定义的前面使用了 pub ，这个结构体会变成公有的，但是这个结构体的字段仍然是私有的。
 如果我们将枚举设为公有，则它的所有成员都将变为公有。
 
-### 6.4 use 关键字引入路径到作用域
+### 7.4 use 关键字引入路径到作用域
 
 目的：解决全路径的冗长和重复
 
@@ -931,7 +931,7 @@ use std::collections::*;
 glob 运算符经常用于测试模块 tests 中，这时会将所有内容引入作用域。
 ```
 
-### 6.5 模块拆分
+### 7.5 模块拆分
 
 问题：单个模块文件中多个模块持续膨胀，需要简化代码增加可读性。
 
@@ -950,3 +950,97 @@ pub fn eat_at_restaurant() {
 pub mod hosting;
 // src/front_of_house/hosting.rs
 ```
+
+## 八、常见集合
+
+- Vector: 有序存储一系列可变值
+- String: 字符的集合
+- HashMap: 哈希 map
+
+### 8.1 Vector
+
+- 内存中数据相邻排列
+- 只能存储相同类型的值
+
+#### 新建 Vector
+
+```rust
+let v: Vec<i32> = Vec::new();
+let v = vec![1,2,3];
+```
+
+#### 更新 Vector
+```rust
+let mut v = Vec::new();
+
+v.push(1);
+v.push(2);
+v.push(3);
+```
+
+#### 销毁 Vector
+```rust
+{
+    let v = vec![1,2,3];
+} // leave scope here, drop
+```
+
+#### 读取 Vector 元素
+```rust
+let v = vec![1,2,3,4,5];
+let third: &i32 = &v[2];
+println!("The third vector is {}", third);
+match v.get(2) {
+    Some(third) => println!("The third element is {}", third),
+    None => println!("There is no third element."),
+}
+// index is begin from 0
+// use & and [] get element
+// [] 方式可以处理 out of bound 的问题，超过索引最大值时，返回 None
+
+let mut v = vec![1,2,3,4,5];
+let first = &v[0]; // 不可变引用
+v.push(6); // 可变引用（扩容）
+// 如果 v 没有足够的空间存储新元素
+// rust 会进行自动扩容，此时需要拷贝原来的值到新的空间中
+println!("The first element is {}", first);
+```
+
+#### 遍历 Vector
+
+```rust
+let v = vec![1,2,3,4,5];
+for i in &v {
+    println!("{}", i);
+}
+
+let mut v = vec![100,200,300];
+for i in &mut v {
+    // 解引用获取 i 的值
+    *i += 50;
+}
+```
+
+#### 使用 enum 存储不同类型的值到 Vector
+
+枚举成员被认为是同一个枚举类型。
+
+```rust
+enum DataTypes {
+    Int(i32),
+    Float(f64),
+    Text(String),
+    Ch(char),
+}
+let datas = vec![
+    DataTypes::Int(100),
+    DataTypes::Float(10.1),
+    DataTypes::Text(String::from("china")),
+    DataTypes::Ch('a'),
+]
+```
+Rust 在编译时就必须准确的知道 vector 中类型的原因在于它需要知道储存每个元素到底需要多少内存。
+
+### 8.2 String
+
+### 8.3 HashMap
