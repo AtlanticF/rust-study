@@ -1041,6 +1041,68 @@ let datas = vec![
 ```
 Rust 在编译时就必须准确的知道 vector 中类型的原因在于它需要知道储存每个元素到底需要多少内存。
 
-### 8.2 String
+### 8.2 字符串
+
+Rust 核心语言中只有一种字符串类型：slice str(&str)。String 类型由标准库提供，没有写进核心语言部分，String 是可变的、有所有权的、UTF-8编码的字符串类型。
+
+```rust
+// 新建 String
+let mut s = String::new();
+let data = "initial contents";
+let s = data.to_string();
+let s = "initial contents".to_string();
+let s = String::from("initial contents");
+
+// 更新
+let mut s = String::from("foo");
+// 向 String 附加字符串 slice
+s.push_str("bar");
+// push_str 是借用
+let s2 = "bar";
+s.push_str(s2);
+// 此处 s2 依然有效
+println!("s2 is {}", s2);
+s.push('l');
+let s1 = String::from("Hello, ");
+let s2 = String::from("world!");
+let s3 = s1 + &s2; // moved s1, borrowed s2
+// 本质上 + 调用 String 的 add 函数：fn add(self, s: &str) -> String
+// why: s2 is &String not a slice str(&str) -> coerced(强转) deref coercion
+// change (&String)s2 -> (&str)&s2[..]
+
+let s1 = String::from("tic");
+let s2 = String::from("tac");
+let s3 = String::from("toe");
+// 根据 add 很难分析具体行为
+let s = s1 + "-" + &s2 + "-" + &s3;
+// 使用 format! 不会获取任何参数的所有权
+let s = format!("{}-{}-{}", s1, s2, s3);
+
+// 索引: rust 字符串(String)不支持索引
+// String 是一个 Vec<u8> 的封装
+let s1 = String::from("hello");
+let h = s1[0]; // complier error.
+// 一个字符串字节值的索引 并不总是对应一个 有效的 Unicode 标量值
+// 索引操作预期总是需要常数时间 (O(1))。但是对于 String 不可能保证这样的性能，因为 Rust 必须从开头到索引位置遍历来确定有多少有效的字符
+
+// 字符串 slice
+let hello = "Здравствуйте";
+let s = &hello[0..4];
+// s 是一个 string slice(&str)，包含字符串 hello 的前 4 个【字节】，此处编码一个字符都是用 2 个字节长度所以 s 是 "Зд"
+// why? &hello[0..1] panic 无效索引
+
+// 遍历
+// 需要明确需要【字符】还是【字节】
+for c in "中国".chars() {
+    println!("{}", c);
+}
+for b in "中国".bytes() {
+    println!("{}", b);
+}
+// 有效的 Unicode 标量值可能会由不止一个字节组成
+// 从字符串中获取字形簇是很复杂的，所以标准库并没有提供这个功能。crates.io 上有些提供这样功能的 crate
+// 😁 PHP 还是强（str_split, explode...）
+// 所以 rust 里最好还是英文，如果想避免 String 麻烦的话
+```
 
 ### 8.3 HashMap
