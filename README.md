@@ -1106,3 +1106,91 @@ for b in "中国".bytes() {
 ```
 
 ### 8.3 HashMap
+
+数据存储在 Heap，所有的 Key 必须是相同类型，Value 也必须是相同类型。
+
+```rust
+// 新建 HashMap
+// 没有备 prelude 自动引用，标准库支持也较少（😁 因为不常用）
+use std::collections::HashMap;
+// 文明时代分数
+let mut scores = HashMap::new();
+scores.insert(String::from("黑暗时代"), 10);
+scores.insert(String::from("普通时代"), 20);
+scores.insert(String::from("黄金时代"), 25);
+scores.insert(String::from("英雄时代"), 40);
+
+// 迭代器创建 HashMap
+let teams = vec![String::from("黑暗时代"), String::from("普通时代"), String::from("黄金时代"), String::from("英雄时代")];
+let initial_scores = vec![10, 20, 25, 40];
+// HashMap<_, _> 注释必须，因为 collect 可能有很多不同的数据结构。_站位 rust 推导
+let mut scores: HashMap<_, _> = teams.into_iter().zip(initial_socres.into_iter()).collect();
+```
+
+#### 所有权
+
+```rust
+use std::collections::HashMap;
+let civilization = String::from("德国");
+let leader = String::from("巴巴罗萨");
+let mut map = HashMap::new();
+map.insert(civilization, leader);
+
+// here use civilization and leader complier panic.
+// civilization and leader droped
+// ownership moved to `map.insert` when function over, droped.
+```
+
+#### 访问 HashMap
+
+```rust
+use std::collections::HashMap;
+let mut socres = HashMap::new();
+socres.insert(String::from("黑暗时代"), 10);
+socres.insert(String::from("普通时代"), 20);
+let times_name = String::from("黑暗时代");
+// borrowing
+let socres = socres.get(&times_name);
+// return Option<V> -> Some(10)
+// 如果给定的键不在 map 中，get 返回 None，使用 match -> 处理
+for(key, value) in &scores {
+    println!("{}: {}", key, value);
+}
+```
+
+#### 更新 HashMap
+
+已存在的键，三种情况：
+- 忽略旧值直接替换
+- 保留旧值忽略新值
+- 新旧结合
+
+```rust
+// 覆盖一个值
+use std::collections::HashMap;
+
+let mut socres = HashMap::new();
+socres.insert(String::from("黑暗时代"), 10);
+scores.insert(String::from("黑暗时代"), 11);
+println!("{:?}", socres);
+
+// 只在没有键时插入
+socres.insert(String::from("黑暗时代"), 10);
+scores.entry(String::from("普通时代")).or_insert(20);
+scores.entry(String::from("黑暗时代")).or_insert(15);
+println!("{:?}", socres);
+
+// 结合更新
+let text = "hello world wonderful world";
+let mut map = HashMap::new();
+for word in text.split_whitespace() {
+    // 没有则设置为 0，有则不设置
+    let count = map.entry(word).or_insert(0);
+    // or_insert 返回 value 的可变引用 &mut v
+    // count + 1
+    *count += 1;
+}
+println!("{:?}", map);
+
+// 默认使用 SipHash 的函数，可以低于 DDOS（安全性）
+```
